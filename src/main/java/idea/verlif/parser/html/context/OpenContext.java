@@ -12,6 +12,8 @@ public class OpenContext extends VarsContext {
 
         setStart("<");
         setEnd(">");
+
+        ignoredPrefix.add('!');
     }
 
 }

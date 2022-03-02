@@ -2,34 +2,45 @@ package idea.verlif.parser.html;
 
 import idea.verlif.parser.html.context.OpenContext;
 import idea.verlif.parser.html.holder.TagHolder;
+import idea.verlif.parser.html.node.TagNodeHolder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Verlif
  */
 public class HtmlParser {
 
-    private final ArrayList<TagNode> nodes;
-
-    private final StringBuilder sb;
+    private final String context;
 
     public HtmlParser(String html) {
-        sb = new StringBuilder();
-        nodes = new ArrayList<>();
-
-        sb.append(html);
+        this.context = html;
     }
 
-    public void parser() {
-        String context = sb.toString();
+    public HtmlParser(File file) throws IOException {
+        this(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+    }
+
+    public HtmlParser(Reader reader) throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        char[] chars = new char[1024];
+        int length;
+        while ((length = reader.read(chars)) != -1) {
+            sb.append(chars, 0, length);
+        }
+
+        this.context = sb.toString();
+    }
+
+    public TagNodeHolder parser() {
         OpenContext openContext = new OpenContext(context);
 
         TagHolder openHolder = new TagHolder();
         openContext.build(openHolder);
 
-        System.out.println(Arrays.toString(openHolder.getNodes().toArray()));
+        return new TagNodeHolder(context, openHolder.getNodes());
     }
 
 }
