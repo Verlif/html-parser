@@ -110,7 +110,7 @@ public class TagNode {
      * @param i 从0开始的节点序号
      * @return 当 i 超出名为 name 节点数量时返回null
      */
-    public TagNode index(String name, int i) {
+    public TagNode name(String name, int i) {
         int t = -1;
         for (TagNode node : children) {
             if (node.like(name)) {
@@ -149,6 +149,13 @@ public class TagNode {
 
     public boolean like(String name) {
         return this.name.equals(name);
+    }
+
+    /**
+     * 获取标签节点的参数表
+     */
+    public Map<String, String> getPropMap() {
+        return propMap;
     }
 
     @Override

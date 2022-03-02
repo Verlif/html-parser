@@ -41,7 +41,7 @@ public class TagNodeHolder {
      * @param i    节点序号
      * @return 第 i 个节点包含的内容（包括节点名称），若超出了节点数量则返回null
      */
-    public NodeLink index(String name, int i) {
+    public NodeLink name(String name, int i) {
         int t = -1;
         for (TagNode node : nodes) {
             if (node.like(name)) {
@@ -55,7 +55,7 @@ public class TagNodeHolder {
     }
 
     public NodeLink name(String name) {
-        return index(name, 0);
+        return name(name, 0);
     }
 
     /**
@@ -120,6 +120,10 @@ public class TagNodeHolder {
             this.node = node;
         }
 
+        public TagNode getNode() {
+            return node;
+        }
+
         /**
          * 获取无标签的内容
          *
@@ -171,8 +175,8 @@ public class TagNodeHolder {
          * @param i 从0开始的节点序号
          * @return 当 i 超出名为 name 节点数量时返回null
          */
-        public NodeLink index(String name, int i) {
-            TagNode re = node.index(name, i);
+        public NodeLink name(String name, int i) {
+            TagNode re = node.name(name, i);
             if (re == null) {
                 return null;
             } else {
@@ -182,7 +186,7 @@ public class TagNodeHolder {
         }
 
         public NodeLink name(String name) {
-            return index(name, 0);
+            return name(name, 0);
         }
     }
 }
