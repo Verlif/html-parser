@@ -12,9 +12,29 @@ import java.util.Set;
  */
 public class TagHolder implements VarsHandler {
 
+    /**
+     * 标签结束符
+     */
     public static final char END_TAG = '/';
-    public static final Set<Character> IGNORED_PREFIX = new HashSet<>();
-    public static final Set<String> SINGLE_PREFIX = new HashSet<>();
+
+    /**
+     * 忽略的标签名。当出现这些标签时，标签不计入节点。
+     */
+    private static final Set<Character> IGNORED_PREFIX = new HashSet<>();
+
+    /**
+     * 单标签名。当出现这些标签时，直接计入节点，不做闭合处理。
+     */
+    private static final Set<String> SINGLE_PREFIX = new HashSet<>();
+
+    /**
+     * 最终标签，过滤掉其下的标签。出现此标签时，会忽略其下的所有子标签。
+     */
+    private static final Set<String> END_PREFIX = new HashSet<>();
+
+    /**
+     * 标签属性分隔符
+     */
     public static final String SPLIT = " ";
 
     static {
@@ -25,6 +45,8 @@ public class TagHolder implements VarsHandler {
         SINGLE_PREFIX.add("meta");
         SINGLE_PREFIX.add("link");
         SINGLE_PREFIX.add("input");
+
+        END_PREFIX.add("script");
     }
 
     private final ArrayList<TagNode> openList;
@@ -38,9 +60,9 @@ public class TagHolder implements VarsHandler {
 
     @Override
     public String handle(int position, String fullName, String tagName) {
-        // 过滤单标签
         String[] split = tagName.split(SPLIT, 2);
         String tag = split[0];
+        // 过滤标签
         if (IGNORED_PREFIX.contains(tagName.charAt(0)) || tag.length() == 0) {
             return fullName;
         }
@@ -77,6 +99,10 @@ public class TagHolder implements VarsHandler {
             if (nowNode == null) {
                 topList.add(node);
             } else {
+                // 如果上层标签是最终标签时，不添加新的子标签
+                if (END_PREFIX.contains(nowNode.getName())) {
+                    return fullName;
+                }
                 nowNode.addNode(node);
             }
             openList.add(node);

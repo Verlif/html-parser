@@ -126,6 +126,21 @@ public class TagNode {
     /**
      * 匹配参数
      *
+     * @param params 节点参数表
+     * @return 是否匹配
+     */
+    public boolean match(Map<String, String> params) {
+        for (String key : params.keySet()) {
+            if (!params.get(key).equals(this.propMap.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 节点名与匹配参数
+     *
      * @param name   节点名称
      * @param params 节点参数表
      * @return 是否匹配

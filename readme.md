@@ -8,11 +8,20 @@ html文件解析器
 可以做的事情包括：
 
 * 遍历节点结构
+* 允许`HTML片段`，例如以下这种方式，没有`<html>`或`<body>`等标签，只要是闭合标签都可以解析。
+
+  ```html
+  <div class="third">
+    <label id="label">你好</label>
+  </div>
+  ```
+
 * 搜索节点（通过标签名或参数信息来`find`）
 * 链式定位节点（`.name("body").name("div", 2).name("ul").index(5)`，通过IDE点就完事了)
+* link语法定位节点（`.link("html.body.div[2].[4].label")`可能会更方便一些）
 * 获取节点内容（`content()`或是自定义`content(VarsHandler)`）
 
-请注意，内嵌`js`可能会影响节点的解析，因为目前节点是通过`<`与`>`来判定标签的，当内嵌的`js`中含有这些符号时，可能会造成节点错误（未来可能会修复）。
+请注意，当前版本会忽略掉`script`中的标签，将`script`作为纯文本内容。
 
 ## 使用
 
@@ -59,14 +68,18 @@ for (TagNodeHolder.NodeLink nodeLink : list) {
 }
 
 // 也可以通过这样的方式精准定位
-TagNodeHolder.NodeLink link = holder
+TagNodeHolder.TagNodeLink node = holder
         .name("html")
         .name("body")
         // 注意，index(int)与index(String, int)都是从0开始的。
         // 所有下面这行代码实际上是指向的第二个名为 div 的标签。
         .name("div", 1)
         .name("label");
-System.out.println(link.content());
+System.out.println(node.content());
+
+// 会获得与上面的方式相同的结果
+TagNodeHolder.TagNodeLink link = holder
+        .link("html.body.div[1].label");
 ```
 
 运行上述代码后，可以在控制台看到以下结果：

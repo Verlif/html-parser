@@ -1,8 +1,5 @@
 package idea.verlif.parser.html.node;
 
-import idea.verlif.parser.html.context.OpenContext;
-import idea.verlif.parser.vars.VarsHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +11,9 @@ import java.util.Map;
  * @version 1.0
  * @date 2022/3/2 10:49
  */
-public class TagNodeHolder {
+public class TagNodeHolder implements NodeLink {
+
+    private static final String LINK_SPLIT = "\\.";
 
     private final String context;
     private final ArrayList<TagNode> nodes;
@@ -30,8 +29,14 @@ public class TagNodeHolder {
      * @param i 节点序号
      * @return 第 i 个节点包含的内容（包括节点名称），若超出了节点数量则返回null
      */
-    public NodeLink index(int i) {
-        return i < nodes.size() ? new NodeLink(nodes.get(i)) : null;
+    @Override
+    public TagNodeLink index(int i) {
+        return i < nodes.size() ? new TagNodeLink(nodes.get(i)) : null;
+    }
+
+    @Override
+    public String total() {
+        return context;
     }
 
     /**
@@ -41,20 +46,22 @@ public class TagNodeHolder {
      * @param i    节点序号
      * @return 第 i 个节点包含的内容（包括节点名称），若超出了节点数量则返回null
      */
-    public NodeLink name(String name, int i) {
+    @Override
+    public TagNodeLink name(String name, int i) {
         int t = -1;
         for (TagNode node : nodes) {
             if (node.like(name)) {
                 t++;
             }
             if (t == i) {
-                return new NodeLink(node);
+                return new TagNodeLink(node);
             }
         }
         return null;
     }
 
-    public NodeLink name(String name) {
+    @Override
+    public TagNodeLink name(String name) {
         return name(name, 0);
     }
 
@@ -64,17 +71,55 @@ public class TagNodeHolder {
      * @param name 标签名称
      * @return 标签列表
      */
-    public List<NodeLink> find(String name) {
-        List<NodeLink> results = new ArrayList<>();
+    public List<TagNodeLink> find(String name) {
+        List<TagNodeLink> results = new ArrayList<>();
         for (TagNode node : nodes) {
             find(name, node, results);
         }
         return results;
     }
 
-    private void find(String name, TagNode node, List<NodeLink> list) {
+    /**
+     * 使用link语法来获取节点链。<br/>
+     * 例如：html.body.div[2].div.label
+     *
+     * @param link link语法组成的参数
+     * @return 定位的节点，可能为null
+     */
+    public NodeLink link(String link) throws IllegalArgumentException {
+        String[] names = link.split(LINK_SPLIT);
+        if (names.length == 0) {
+            throw new IllegalArgumentException(link + "is not allowed!");
+        }
+        NodeLink node = this;
+        for (String name : names) {
+            int start = name.indexOf('[');
+            if (start < 0) {
+                node = node.name(name);
+            } else {
+                int end = name.length() - 1;
+                int index;
+                try {
+                    index = Integer.parseInt(name.substring(start + 1, end));
+                } catch (Exception ignored) {
+                    throw new IllegalArgumentException(name + " is not supported!");
+                }
+                if (start == 0) {
+                    node = node.index(index);
+                } else {
+                    node = node.name(name.substring(0, start), index);
+                }
+            }
+            if (node == null) {
+                return null;
+            }
+        }
+        return node;
+    }
+
+    private void find(String name, TagNode node, List<TagNodeLink> list) {
         if (node.like(name)) {
-            list.add(new NodeLink(node));
+            list.add(new TagNodeLink(node));
         }
         for (TagNode child : node.children) {
             find(name, child, list);
@@ -88,17 +133,17 @@ public class TagNodeHolder {
      * @param params 标签参数匹配
      * @return 标签列表
      */
-    public List<NodeLink> find(String name, Map<String, String> params) {
-        List<NodeLink> results = new ArrayList<>();
+    public List<TagNodeLink> find(String name, Map<String, String> params) {
+        List<TagNodeLink> results = new ArrayList<>();
         for (TagNode node : nodes) {
             find(name, params, node, results);
         }
         return results;
     }
 
-    private void find(String name, Map<String, String> params, TagNode node, List<NodeLink> list) {
+    private void find(String name, Map<String, String> params, TagNode node, List<TagNodeLink> list) {
         if (node.match(name, params)) {
-            list.add(new NodeLink(node));
+            list.add(new TagNodeLink(node));
         }
         for (TagNode child : node.children) {
             find(name, params, child, list);
@@ -112,11 +157,11 @@ public class TagNodeHolder {
         return nodes;
     }
 
-    public class NodeLink {
+    public class TagNodeLink implements NodeLink {
 
         private TagNode node;
 
-        public NodeLink(TagNode node) {
+        public TagNodeLink(TagNode node) {
             this.node = node;
         }
 
@@ -125,30 +170,11 @@ public class TagNodeHolder {
         }
 
         /**
-         * 获取无标签的内容
-         *
-         * @return 无标签内容文本
-         */
-        public String content() {
-            return content(((i, s, s1) -> ""));
-        }
-
-        /**
-         * 通过自定义变量处理器来获取内容
-         *
-         * @param handler 变量处理器
-         * @return 由变量处理器处理后的内容文本
-         */
-        public String content(VarsHandler handler) {
-            OpenContext varsContext = new OpenContext(total());
-            return varsContext.build(handler);
-        }
-
-        /**
          * 获取无修改的原内容文本
          *
          * @return 原内容文本
          */
+        @Override
         public String total() {
             return context.substring(node.start, node.end);
         }
@@ -159,7 +185,8 @@ public class TagNodeHolder {
          * @param i 节点序号
          * @return 第 i 个子节点包含的内容（包括节点名称），若超出了节点数量则返回null
          */
-        public NodeLink index(int i) {
+        @Override
+        public TagNodeLink index(int i) {
             TagNode re = node.index(i);
             if (re == null) {
                 return null;
@@ -175,7 +202,8 @@ public class TagNodeHolder {
          * @param i 从0开始的节点序号
          * @return 当 i 超出名为 name 节点数量时返回null
          */
-        public NodeLink name(String name, int i) {
+        @Override
+        public TagNodeLink name(String name, int i) {
             TagNode re = node.name(name, i);
             if (re == null) {
                 return null;
@@ -185,7 +213,8 @@ public class TagNodeHolder {
             }
         }
 
-        public NodeLink name(String name) {
+        @Override
+        public TagNodeLink name(String name) {
             return name(name, 0);
         }
     }
