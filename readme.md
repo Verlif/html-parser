@@ -120,7 +120,7 @@ TagNodeHolder.TagNodeLink link = holder
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>html-parser</artifactId>
->            <version>0.2</version>
+>            <version>0.2.1</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -128,6 +128,6 @@ TagNodeHolder.TagNodeLink link = holder
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:html-parser:0.2'
+>   implementation 'com.github.Verlif:html-parser:0.2.1'
 > }
 > ```
