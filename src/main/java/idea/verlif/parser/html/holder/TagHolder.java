@@ -20,17 +20,17 @@ public class TagHolder implements VarsHandler {
     /**
      * 忽略的标签名。当出现这些标签时，标签不计入节点。
      */
-    private static final Set<Character> IGNORED_PREFIX = new HashSet<>();
+    protected final Set<Character> IGNORED_PREFIX = new HashSet<>();
 
     /**
      * 单标签名。当出现这些标签时，直接计入节点，不做闭合处理。
      */
-    private static final Set<String> SINGLE_PREFIX = new HashSet<>();
+    protected final Set<String> SINGLE_PREFIX = new HashSet<>();
 
     /**
      * 最终标签，过滤掉其下的标签。出现此标签时，会忽略其下的所有子标签。
      */
-    private static final Set<String> END_PREFIX = new HashSet<>();
+    protected final Set<String> END_PREFIX = new HashSet<>();
 
     /**
      * 标签属性分隔符
@@ -42,11 +42,11 @@ public class TagHolder implements VarsHandler {
      */
     private final String context;
 
-    static {
+    {
         IGNORED_PREFIX.add('!');
         IGNORED_PREFIX.add('=');
 
-        SINGLE_PREFIX.add("br/");
+        SINGLE_PREFIX.add("br");
         SINGLE_PREFIX.add("meta");
         SINGLE_PREFIX.add("link");
         SINGLE_PREFIX.add("input");
@@ -120,6 +120,33 @@ public class TagHolder implements VarsHandler {
             nowNode = node;
         }
         return fullName;
+    }
+
+    /**
+     * 添加单标签
+     *
+     * @param tag 单标签。用于避免没有闭合标签导致的解析错误。添加后会忽略此标签闭合标签。
+     */
+    public void addSingleTag(String tag) {
+        SINGLE_PREFIX.add(tag);
+    }
+
+    /**
+     * 添加忽略的前缀
+     *
+     * @param c 跟随在标签头后的第一个字符
+     */
+    public void addIgnoredLink(char c) {
+        IGNORED_PREFIX.add(c);
+    }
+
+    /**
+     * 添加最终标签
+     *
+     * @param tag 最终标签。添加后，此标签中的内容将不做解析。
+     */
+    public void addEndTag(String tag) {
+        END_PREFIX.add(tag);
     }
 
     public ArrayList<TagNode> getNodes() {

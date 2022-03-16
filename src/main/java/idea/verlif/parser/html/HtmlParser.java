@@ -45,10 +45,9 @@ public class HtmlParser {
             adapter = new OpenContextAdapter();
         }
         VarsContext varsContext = adapter.buildContext(context);
+        TagHolder openHolder = adapter.buildHolder(context);
 
-        TagHolder openHolder = new TagHolder(context);
         varsContext.build(openHolder);
-
         return new TagNodeHolder(context, openHolder.getNodes());
     }
 
