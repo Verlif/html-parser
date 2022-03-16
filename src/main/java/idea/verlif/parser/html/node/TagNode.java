@@ -114,7 +114,7 @@ public class TagNode implements NodeLink {
 
     @Override
     public String total() {
-        return context;
+        return context.substring(start, end);
     }
 
     @Override
