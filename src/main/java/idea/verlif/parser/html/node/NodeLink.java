@@ -3,6 +3,8 @@ package idea.verlif.parser.html.node;
 import idea.verlif.parser.html.context.OpenContext;
 import idea.verlif.parser.vars.VarsHandler;
 
+import java.util.List;
+
 /**
  * @author Verlif
  * @version 1.0
@@ -61,4 +63,11 @@ public interface NodeLink {
      * @return 原内容文本
      */
     String total();
+
+    /**
+     * 获取其下的所有子节点
+     *
+     * @return 子节点列表
+     */
+    List<? extends NodeLink> children();
 }

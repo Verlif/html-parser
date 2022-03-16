@@ -37,6 +37,11 @@ public class TagHolder implements VarsHandler {
      */
     public static final String SPLIT = " ";
 
+    /**
+     * 上下文
+     */
+    private final String context;
+
     static {
         IGNORED_PREFIX.add('!');
         IGNORED_PREFIX.add('=');
@@ -53,9 +58,11 @@ public class TagHolder implements VarsHandler {
     private final ArrayList<TagNode> topList;
     private TagNode nowNode;
 
-    public TagHolder() {
+    public TagHolder(String context) {
         openList = new ArrayList<>();
         topList = new ArrayList<>();
+
+        this.context = context;
     }
 
     @Override
@@ -66,7 +73,7 @@ public class TagHolder implements VarsHandler {
         if (IGNORED_PREFIX.contains(tagName.charAt(0)) || tag.length() == 0) {
             return fullName;
         }
-        TagNode node = new TagNode(tag, split.length == 2 ? split[1] : null);
+        TagNode node = new TagNode(tag, split.length == 2 ? split[1] : null, context);
         node.setStart(position);
         node.setEnd(position + fullName.length());
         // 判断是否是单标签（当标签最后一位为结束符或标签本身是单标签时）
@@ -82,6 +89,10 @@ public class TagHolder implements VarsHandler {
         int openSize = openList.size();
         // 判定是否是成对的闭标签
         if (tag.charAt(0) == END_TAG) {
+            // 判断是否是单标签的闭合标签
+            if (SINGLE_PREFIX.contains(tag.substring(1))) {
+                return fullName;
+            }
             // 判断是否是上一个开标签的闭标签
             if (nowNode.like(node)) {
                 // 设定标签的结束位置

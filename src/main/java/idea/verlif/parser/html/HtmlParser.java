@@ -1,8 +1,9 @@
 package idea.verlif.parser.html;
 
-import idea.verlif.parser.html.context.OpenContext;
+import idea.verlif.parser.html.context.OpenContextAdapter;
 import idea.verlif.parser.html.holder.TagHolder;
 import idea.verlif.parser.html.node.TagNodeHolder;
+import idea.verlif.parser.vars.VarsContext;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class HtmlParser {
 
     private final String context;
+    private VarsContextAdapter adapter;
 
     public HtmlParser(String html) {
         this.context = html;
@@ -34,11 +36,18 @@ public class HtmlParser {
         this.context = sb.toString();
     }
 
-    public TagNodeHolder parser() {
-        OpenContext openContext = new OpenContext(context);
+    public void setAdapter(VarsContextAdapter adapter) {
+        this.adapter = adapter;
+    }
 
-        TagHolder openHolder = new TagHolder();
-        openContext.build(openHolder);
+    public TagNodeHolder parser() {
+        if (adapter == null) {
+            adapter = new OpenContextAdapter();
+        }
+        VarsContext varsContext = adapter.buildContext(context);
+
+        TagHolder openHolder = new TagHolder(context);
+        varsContext.build(openHolder);
 
         return new TagNodeHolder(context, openHolder.getNodes());
     }

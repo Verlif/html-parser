@@ -4,12 +4,13 @@ import idea.verlif.parser.html.holder.TagHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author Verlif
  */
-public class TagNode {
+public class TagNode implements NodeLink {
 
     /**
      * 节点名称
@@ -20,6 +21,11 @@ public class TagNode {
      * 内联参数表
      */
     private final Map<String, String> propMap;
+
+    /**
+     * 上下文
+     */
+    private final String context;
 
     /**
      * 子节点集合
@@ -36,10 +42,11 @@ public class TagNode {
      */
     int end;
 
-    public TagNode(String name, String props) {
+    public TagNode(String name, String props, String context) {
         this.name = name.replace("/", "");
         this.children = new ArrayList<>();
         this.propMap = new HashMap<>();
+        this.context = context;
 
         if (props != null) {
             // 以空格为分隔符
@@ -100,8 +107,24 @@ public class TagNode {
      * @param i 从0开始的节点序号
      * @return 当 i 超出节点数量时返回null
      */
+    @Override
     public TagNode index(int i) {
         return i < children.size() ? children.get(i) : null;
+    }
+
+    @Override
+    public String total() {
+        return context;
+    }
+
+    @Override
+    public List<? extends NodeLink> children() {
+        return children;
+    }
+
+    @Override
+    public NodeLink name(String name) {
+        return name(name, 0);
     }
 
     /**
@@ -110,6 +133,7 @@ public class TagNode {
      * @param i 从0开始的节点序号
      * @return 当 i 超出名为 name 节点数量时返回null
      */
+    @Override
     public TagNode name(String name, int i) {
         int t = -1;
         for (TagNode node : children) {

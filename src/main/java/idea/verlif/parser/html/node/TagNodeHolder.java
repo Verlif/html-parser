@@ -39,6 +39,11 @@ public class TagNodeHolder implements NodeLink {
         return context;
     }
 
+    @Override
+    public List<? extends NodeLink> children() {
+        return nodes;
+    }
+
     /**
      * 获取名为 name 的第 i 个节点的内容
      *
@@ -177,6 +182,11 @@ public class TagNodeHolder implements NodeLink {
         @Override
         public String total() {
             return context.substring(node.start, node.end);
+        }
+
+        @Override
+        public List<? extends NodeLink> children() {
+            return node.children();
         }
 
         /**
