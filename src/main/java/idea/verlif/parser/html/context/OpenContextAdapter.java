@@ -18,6 +18,6 @@ public class OpenContextAdapter implements VarsContextAdapter {
 
     @Override
     public TagHolder buildHolder(String context) {
-        return new TagHolder(context);
+        return new TagHolder();
     }
 }
