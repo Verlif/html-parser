@@ -3,7 +3,7 @@
 html文件解析器
 
 超简单的`HTML`格式信息解析器，利用了 [vars-parser](https://github.com/Verlif/vars-parser/) 来解析`HTML`中的标签（以下称为 __节点__ ）信息，然后生成一个可查询的节点管理器。
-通过这个管理器即可获取节点内容。
+通过这个管理器即可获取节点内容。实际上，这是一个简单的`xml解析器`。
 
 可以做的事情包括：
 
@@ -18,8 +18,9 @@ html文件解析器
 
 * 搜索节点（通过标签名或参数信息来`find`）
 * 链式定位节点（`.name("body").name("div", 2).name("ul").index(5)`，通过IDE点就完事了)
-* link语法定位节点（`.link("html.body.div[2].[4].label")`可能会更方便一些）
+* link语法定位节点（`.link("html>body>div[2]>[4]>label")`可能会更方便一些）
 * 获取节点内容（`content()`或是自定义`content(VarsHandler)`）
+* 获取节点参数（`props()获取参数表`)
 
 请注意，当前版本会忽略掉`script`中的标签，将`script`作为纯文本内容。
 
@@ -40,7 +41,8 @@ html文件解析器
 </head>
 <body>
 <div class="first">
-    <div class="secend"></div>
+    <div id="second">这里是second的节点</div>
+    <div class="second2">这里是second2的节点</div>
 </div>
 <div class="third">
     <label id="label">你好</label>
@@ -66,9 +68,14 @@ for (TagNodeHolder.NodeLink nodeLink : list) {
     // 打印标签内容
     System.out.println("node: " + nodeLink.content());
 }
+// 或是通过name方法来匹配第一个标签
+NodeLink nodeLink = holder.name("label;id=label");
+if (nodeLink != null) {
+    System.out.println(nodeLink.total());
+}
 
 // 也可以通过这样的方式精准定位
-TagNodeHolder.TagNodeLink node = holder
+NodeLink node = holder
         .name("html")
         .name("body")
         // 注意，index(int)与index(String, int)都是从0开始的。
@@ -78,8 +85,11 @@ TagNodeHolder.TagNodeLink node = holder
 System.out.println(node.content());
 
 // 会获得与上面的方式相同的结果
-TagNodeHolder.TagNodeLink link = holder
-        .link("html.body.div[1].label");
+NodeLink link = holder
+        .link("html>body>div[1]>label");
+// 或者直接通过语法匹配
+NodeLink link = holder
+        .link("label;id=label");
 ```
 
 运行上述代码后，可以在控制台看到以下结果：
@@ -120,7 +130,7 @@ TagNodeHolder.TagNodeLink link = holder
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>html-parser</artifactId>
->            <version>0.2.1</version>
+>            <version>0.3</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -128,6 +138,6 @@ TagNodeHolder.TagNodeLink link = holder
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:html-parser:0.2.1'
+>   implementation 'com.github.Verlif:html-parser:0.3'
 > }
 > ```

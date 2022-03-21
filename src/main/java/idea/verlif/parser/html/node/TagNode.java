@@ -15,17 +15,17 @@ public class TagNode implements NodeLink {
     /**
      * 节点名称
      */
-    private final String name;
+    protected final String name;
 
     /**
      * 内联参数表
      */
-    private final Map<String, String> propMap;
+    protected final Map<String, String> propMap;
 
     /**
      * 上下文
      */
-    private final String context;
+    protected final String context;
 
     /**
      * 子节点集合
@@ -97,10 +97,6 @@ public class TagNode implements NodeLink {
         return children.get(index);
     }
 
-    public String getName() {
-        return name;
-    }
-
     /**
      * 获取其下第 i 个节点
      *
@@ -110,6 +106,24 @@ public class TagNode implements NodeLink {
     @Override
     public TagNode index(int i) {
         return i < children.size() ? children.get(i) : null;
+    }
+
+    @Override
+    public List<NodeLink> find(String name, Map<String, String> params) {
+        List<NodeLink> results = new ArrayList<>();
+        for (TagNode node : children) {
+            find(name, params, node, results);
+        }
+        return results;
+    }
+
+    private void find(String name, Map<String, String> params, TagNode node, List<NodeLink> list) {
+        if (node.match(name, params)) {
+            list.add(node);
+        }
+        for (TagNode child : node.children) {
+            find(name, params, child, list);
+        }
     }
 
     @Override
@@ -123,28 +137,13 @@ public class TagNode implements NodeLink {
     }
 
     @Override
-    public NodeLink name(String name) {
-        return name(name, 0);
+    public String name() {
+        return name;
     }
 
-    /**
-     * 获取其下名称为 name 的第 i 个节点
-     *
-     * @param i 从0开始的节点序号
-     * @return 当 i 超出名为 name 节点数量时返回null
-     */
     @Override
-    public TagNode name(String name, int i) {
-        int t = -1;
-        for (TagNode node : children) {
-            if (node.like(name)) {
-                t++;
-            }
-            if (t == i) {
-                return node;
-            }
-        }
-        return null;
+    public Map<String, String> props() {
+        return propMap;
     }
 
     /**
@@ -154,6 +153,9 @@ public class TagNode implements NodeLink {
      * @return 是否匹配
      */
     public boolean match(Map<String, String> params) {
+        if (params == null) {
+            return true;
+        }
         for (String key : params.keySet()) {
             if (!params.get(key).equals(this.propMap.get(key))) {
                 return false;
@@ -170,13 +172,8 @@ public class TagNode implements NodeLink {
      * @return 是否匹配
      */
     public boolean match(String name, Map<String, String> params) {
-        if (this.name.equals(name)) {
-            for (String key : params.keySet()) {
-                if (!params.get(key).equals(this.propMap.get(key))) {
-                    return false;
-                }
-            }
-            return true;
+        if (name == null || name.length() == 0 || this.name.equals(name)) {
+            return match(params);
         } else {
             return false;
         }
@@ -187,14 +184,7 @@ public class TagNode implements NodeLink {
     }
 
     public boolean like(String name) {
-        return this.name.equals(name);
-    }
-
-    /**
-     * 获取标签节点的参数表
-     */
-    public Map<String, String> getPropMap() {
-        return propMap;
+        return name == null || name.length() == 0 || this.name.equals(name);
     }
 
     @Override

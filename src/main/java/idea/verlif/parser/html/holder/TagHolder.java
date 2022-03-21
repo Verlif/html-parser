@@ -111,7 +111,7 @@ public class TagHolder implements VarsHandler {
                 topList.add(node);
             } else {
                 // 如果上层标签是最终标签时，不添加新的子标签
-                if (END_PREFIX.contains(nowNode.getName())) {
+                if (END_PREFIX.contains(nowNode.name())) {
                     return fullName;
                 }
                 nowNode.addNode(node);
