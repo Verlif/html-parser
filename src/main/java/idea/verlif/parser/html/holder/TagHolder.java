@@ -50,6 +50,7 @@ public class TagHolder implements VarsHandler {
         SINGLE_PREFIX.add("meta");
         SINGLE_PREFIX.add("link");
         SINGLE_PREFIX.add("input");
+        SINGLE_PREFIX.add("hr");
 
         END_PREFIX.add("script");
     }

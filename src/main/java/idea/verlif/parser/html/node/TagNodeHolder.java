@@ -1,5 +1,7 @@
 package idea.verlif.parser.html.node;
 
+import idea.verlif.parser.html.node.selector.Selector;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +24,13 @@ public class TagNodeHolder implements NodeLink {
     private final String context;
     private final ArrayList<TagNode> nodes;
 
+    private final Selector selector;
+
     public TagNodeHolder(String context, ArrayList<TagNode> nodes) {
         this.context = context;
         this.nodes = nodes;
+
+        this.selector = new Selector();
     }
 
     /**
@@ -96,9 +102,9 @@ public class TagNodeHolder implements NodeLink {
      *     <li># 开头 - 匹配参数id，无论标签名。例如 {@code #footer} 匹配 {@code &lt;abc id="footer">}</li>
      *     <li>
      *         [] 包裹的数字 - 当前节点下的第几个子节点（从0开始，参数小于0则从0开始）。<br/>
-     *         例如 {@code [2]} 匹配当前节点下的第2个子节点。<br/>
-     *         例如 {@code div[2]} 匹配当前节点下的第二个名为div的子节点。<br/>
-     *         例如 {@code div;class=colorful[2]} 匹配当前节点下的名为div且参数class为colorful的第二个子节点。
+     *         例如 {@code [2]} 匹配当前节点下的第3个子节点。<br/>
+     *         例如 {@code div[2]} 匹配当前节点下的第3个名为div的子节点。<br/>
+     *         例如 {@code div;class=colorful[2]} 匹配当前节点下的名为div且参数class为colorful的第3个子节点。
      *     </li>
      * </ul>
      * 所有的标识间都通过 {@link #LINK_SPLIT 标识区隔} 来隔断。
@@ -107,7 +113,7 @@ public class TagNodeHolder implements NodeLink {
      * <ol>
      *     <li>[id为footer的标签]</li>
      *     <li>[第一个 名为div 的标签]</li>
-     *     <li>[第2个标签]</li>
+     *     <li>[第3个标签]</li>
      *     <li>[第一个 名为p 的标签]</li>
      * </ol>
      *
@@ -173,6 +179,16 @@ public class TagNodeHolder implements NodeLink {
         for (TagNode child : node.children) {
             find(name, params, child, list);
         }
+    }
+
+    /**
+     * 通过selector语法来获取节点
+     *
+     * @param selector selector字符串
+     * @return 获取的节点
+     */
+    public NodeLink select(String selector) {
+        return this.selector.select(selector, this);
     }
 
     /**

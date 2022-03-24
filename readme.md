@@ -99,6 +99,12 @@ NodeLink link = holder
 你好
 ```
 
+## 常用方法
+
+* [link方法](docs/link.md)
+* [find方法](docs/find.md)
+* [select方法](docs/select.md)
+
 ## 添加依赖
 
 1. 添加Jitpack仓库源
@@ -130,7 +136,7 @@ NodeLink link = holder
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>html-parser</artifactId>
->            <version>0.3</version>
+>            <version>0.4</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -138,6 +144,6 @@ NodeLink link = holder
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:html-parser:0.3'
+>   implementation 'com.github.Verlif:html-parser:0.4'
 > }
 > ```
