@@ -48,9 +48,17 @@ public class TagHolder implements VarsHandler {
 
         SINGLE_PREFIX.add("br");
         SINGLE_PREFIX.add("meta");
-        SINGLE_PREFIX.add("link");
-        SINGLE_PREFIX.add("input");
         SINGLE_PREFIX.add("hr");
+        SINGLE_PREFIX.add("img");
+        SINGLE_PREFIX.add("base");
+        SINGLE_PREFIX.add("col");
+        SINGLE_PREFIX.add("embed");
+        SINGLE_PREFIX.add("frame");
+        SINGLE_PREFIX.add("input");
+        SINGLE_PREFIX.add("link");
+        SINGLE_PREFIX.add("param");
+        SINGLE_PREFIX.add("source");
+        SINGLE_PREFIX.add("track");
 
         END_PREFIX.add("script");
     }

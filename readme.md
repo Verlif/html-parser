@@ -136,7 +136,7 @@ NodeLink link = holder
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>html-parser</artifactId>
->            <version>0.4</version>
+>            <version>0.4.1</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -144,6 +144,6 @@ NodeLink link = holder
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:html-parser:0.4'
+>   implementation 'com.github.Verlif:html-parser:0.4.1'
 > }
 > ```
