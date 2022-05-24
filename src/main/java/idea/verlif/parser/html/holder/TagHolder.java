@@ -79,7 +79,7 @@ public class TagHolder implements VarsHandler {
         String[] split = tagName.split(SPLIT, 2);
         String tag = split[0];
         // 过滤标签
-        if (IGNORED_PREFIX.contains(tagName.charAt(0)) || tag.length() == 0) {
+        if (tagName.length() == 0 || IGNORED_PREFIX.contains(tagName.charAt(0)) || tag.length() == 0) {
             return fullName;
         }
         TagNode node = new TagNode(tag, split.length == 2 ? split[1] : null, context);

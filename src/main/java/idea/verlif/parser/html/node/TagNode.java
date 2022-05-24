@@ -1,7 +1,5 @@
 package idea.verlif.parser.html.node;
 
-import idea.verlif.parser.html.holder.TagHolder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,30 +47,34 @@ public class TagNode implements NodeLink {
         this.context = context;
 
         if (props != null) {
-            // 以空格为分隔符
-            String[] ss = props.split(TagHolder.SPLIT);
-            String lastKsy = null;
-            for (String s : ss) {
-                String pro = s.trim();
-                if (pro.length() > 0) {
-                    String[] prop = s.split("=");
-                    int length = prop.length == 2 ? prop[1].length() : prop[0].length();
-                    if (prop.length == 2) {
-                        lastKsy = prop[0];
-                        propMap.put(lastKsy, prop[1].substring(1, length));
-                    } else if (lastKsy != null && length > 0) {
-                        if (prop[0].charAt(length - 1) == '\"') {
-                            propMap.put(lastKsy, propMap.get(lastKsy) + TagHolder.SPLIT + prop[0].substring(0, length - 1));
+            char[] chars = props.toCharArray();
+            boolean isKey = true, in = false;
+            String key = null;
+            StringBuilder sb = new StringBuilder();
+            for (char c : chars) {
+                if (isKey) {
+                    if (c == '=') {
+                        isKey = false;
+                        key = sb.toString();
+                        sb.setLength(0);
+                    } else if (c != ' ') {
+                        sb.append(c);
+                    }
+                } else {
+                    if (in) {
+                        if (c == '\"') {
+                            in = false;
+                            propMap.put(key, sb.toString());
+                            sb.setLength(0);
+                            isKey = true;
                         } else {
-                            propMap.put(lastKsy, propMap.get(lastKsy) + TagHolder.SPLIT + prop[0]);
+                            sb.append(c);
+                        }
+                    } else {
+                        if (c == '\"') {
+                            in = true;
                         }
                     }
-                }
-            }
-            for (String key : propMap.keySet()) {
-                String value = propMap.get(key);
-                if (value.charAt(value.length() - 1) == '\"') {
-                    propMap.put(key, value.substring(0, value.length() - 1));
                 }
             }
         }
