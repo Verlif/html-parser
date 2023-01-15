@@ -4,7 +4,9 @@ import idea.verlif.parser.html.node.NodeLink;
 import idea.verlif.parser.html.node.selector.NoSuchParamException;
 import idea.verlif.parser.html.node.selector.SelectorParser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Verlif
@@ -13,15 +15,31 @@ import java.util.List;
  */
 public class TagParser implements SelectorParser {
 
+    private static final Map<String, String> EMPTY_PARAM = new HashMap<>();
+
     @Override
     public NodeLink match(String param, NodeLink nodeLink) {
-        List<? extends NodeLink> list = nodeLink.children();
-        for (NodeLink link : list) {
-            if (param.equals(link.name())) {
-                return link;
+        List<NodeLink> nodeLinks = null;
+        int i = param.indexOf('#');
+        if (i > -1) {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", param.substring(i + 1));
+            nodeLinks = nodeLink.find(param.substring(0, i), map);
+        } else {
+            i = param.indexOf('.');
+            if (i > -1) {
+                Map<String, String> map = new HashMap<>();
+                map.put("class", param.substring(i + 1));
+                nodeLinks = nodeLink.find(param.substring(0, i), map);
+            } else {
+                nodeLinks = nodeLink.find(param, EMPTY_PARAM);
             }
         }
-        throw new NoSuchParamException(param);
+        if (nodeLinks == null || nodeLinks.size() == 0) {
+            throw new NoSuchParamException(param);
+        } else {
+            return nodeLinks.get(0);
+        }
     }
 
 }

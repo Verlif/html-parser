@@ -109,41 +109,47 @@ NodeLink link = holder
 
 1. 添加Jitpack仓库源
 
-> maven
-> ```xml
-> <repositories>
->    <repository>
->        <id>jitpack.io</id>
->        <url>https://jitpack.io</url>
->    </repository>
-> </repositories>
-> ```
+   __lastVersion__: [![](https://jitpack.io/v/Verlif/html-parser.svg)](https://jitpack.io/#Verlif/html-parser)
 
-> Gradle
-> ```text
-> allprojects {
->   repositories {
->       maven { url 'https://jitpack.io' }
->   }
-> }
-> ```
+   maven
+
+   ```xml
+   <repositories>
+      <repository>
+          <id>jitpack.io</id>
+          <url>https://jitpack.io</url>
+      </repository>
+   </repositories>
+   ```
+
+   Gradle
+
+   ```text
+   allprojects {
+     repositories {
+         maven { url 'https://jitpack.io' }
+     }
+   }
+   ```
 
 2. 添加依赖
 
-> maven
-> ```xml
->    <dependencies>
->        <dependency>
->            <groupId>com.github.Verlif</groupId>
->            <artifactId>html-parser</artifactId>
->            <version>0.5</version>
->        </dependency>
->    </dependencies>
-> ```
+   maven
 
-> Gradle
-> ```text
-> dependencies {
->   implementation 'com.github.Verlif:html-parser:0.5'
-> }
-> ```
+   ```xml
+      <dependencies>
+          <dependency>
+              <groupId>com.github.Verlif</groupId>
+              <artifactId>html-parser</artifactId>
+              <version>lastVersion</version>
+          </dependency>
+      </dependencies>
+   ```
+
+   Gradle
+
+   ```text
+   dependencies {
+     implementation 'com.github.Verlif:html-parser:lastVersion'
+   }
+   ```

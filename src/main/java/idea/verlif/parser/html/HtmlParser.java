@@ -5,26 +5,29 @@ import idea.verlif.parser.html.holder.TagHolder;
 import idea.verlif.parser.html.node.TagNodeHolder;
 import idea.verlif.parser.vars.VarsContext;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * @author Verlif
  */
 public class HtmlParser {
 
-    private final String context;
     private VarsContextAdapter adapter;
 
-    public HtmlParser(String html) {
-        this.context = html;
+    public void setAdapter(VarsContextAdapter adapter) {
+        this.adapter = adapter;
     }
 
-    public HtmlParser(File file) throws IOException {
-        this(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+    public TagNodeHolder parser(File file) throws IOException {
+        return parser(new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8));
     }
 
-    public HtmlParser(Reader reader) throws IOException {
+    public TagNodeHolder parser(Reader reader) throws IOException {
         StringBuilder sb = new StringBuilder();
 
         char[] chars = new char[1024];
@@ -33,21 +36,17 @@ public class HtmlParser {
             sb.append(chars, 0, length);
         }
 
-        this.context = sb.toString();
+        return parser(sb.toString());
     }
 
-    public void setAdapter(VarsContextAdapter adapter) {
-        this.adapter = adapter;
-    }
-
-    public TagNodeHolder parser() {
+    public TagNodeHolder parser(String context) {
         if (adapter == null) {
             adapter = new OpenContextAdapter();
         }
-        VarsContext varsContext = adapter.buildContext(context);
+        VarsContext varsContext = adapter.buildContext();
         TagHolder openHolder = adapter.buildHolder(context);
 
-        varsContext.build(openHolder);
+        varsContext.build(context, openHolder);
         return new TagNodeHolder(context, openHolder.getNodes());
     }
 

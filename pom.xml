@@ -6,7 +6,7 @@
 
     <groupId>idea.verlif</groupId>
     <artifactId>html-parser</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -17,7 +17,13 @@
         <dependency>
             <groupId>com.github.Verlif</groupId>
             <artifactId>vars-parser</artifactId>
-            <version>0.6.4</version>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Verlif</groupId>
+            <artifactId>stopwatch</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

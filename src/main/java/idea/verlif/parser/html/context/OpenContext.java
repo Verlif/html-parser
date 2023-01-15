@@ -7,13 +7,16 @@ import idea.verlif.parser.vars.VarsContext;
  */
 public class OpenContext extends VarsContext {
 
-    public OpenContext(String context) {
-        super(context);
+    private static final OpenContext INSTANCE = new OpenContext();
 
+    private OpenContext() {
         setStart("<");
         setEnd(">");
 
         ignoredPrefix.add('!');
     }
 
+    public static OpenContext getInstance() {
+        return INSTANCE;
+    }
 }

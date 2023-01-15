@@ -19,15 +19,24 @@ public class Selector {
     private static final String SPLIT = ">";
 
     private final List<SelectorParser> parserList;
+    private final WithParamParser withParamParser;
 
     public Selector() {
         parserList = new ArrayList<>();
+        withParamParser = new WithParamParser();
+        parserList.add(withParamParser);
 
         parserList.add(new IdParser());
         parserList.add(new ClassParser());
-        parserList.add(new WithParamParser());
-
         parserList.add(new TagParser());
+    }
+
+    public void addSelectorParser(SelectorParser parser) {
+        parserList.add(parser);
+    }
+
+    public void addWithParser(WithParamParser.WithParser parser) {
+        withParamParser.addWithParser(parser);
     }
 
     public NodeLink select(String selector, NodeLink root) {

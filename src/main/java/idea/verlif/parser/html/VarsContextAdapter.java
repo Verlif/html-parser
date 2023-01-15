@@ -13,9 +13,8 @@ public interface VarsContextAdapter {
     /**
      * 构建变量上下文
      *
-     * @param context 上下文
      */
-    VarsContext buildContext(String context);
+    VarsContext buildContext();
 
     /**
      * 构建标签管理器

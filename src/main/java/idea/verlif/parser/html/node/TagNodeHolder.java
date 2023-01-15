@@ -33,6 +33,10 @@ public class TagNodeHolder implements NodeLink {
         this.selector = new Selector();
     }
 
+    public Selector getSelector() {
+        return selector;
+    }
+
     /**
      * 获取第 i 个节点的内容
      *
@@ -94,6 +98,13 @@ public class TagNodeHolder implements NodeLink {
         return (list.size() == 0) ? null : list.get(0);
     }
 
+    public NodeLink cla(String className) {
+        Map<String, String> param = new HashMap<>(1);
+        param.put("class", className);
+        List<NodeLink> list = find("", param);
+        return (list.size() == 0) ? null : list.get(0);
+    }
+
     /**
      * 使用link语法来获取节点链，通过标识链来匹配唯一的节点。<br/>
      * 标识使用规则如下：
@@ -134,6 +145,9 @@ public class TagNodeHolder implements NodeLink {
                 if (f == '#') {
                     // id查找
                     node = id(name.substring(1));
+                } else if (f == '.') {
+                    // class查找
+                    node = cla(name.substring(1));
                 } else {
                     // 名称查找
                     node = node.name(name);

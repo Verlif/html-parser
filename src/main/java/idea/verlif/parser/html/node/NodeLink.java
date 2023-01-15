@@ -104,8 +104,8 @@ public interface NodeLink {
      * @return 由变量处理器处理后的内容文本
      */
     default String content(VarsHandler handler) {
-        OpenContext varsContext = new OpenContext(total());
-        return varsContext.build(handler);
+        OpenContext varsContext = OpenContext.getInstance();
+        return varsContext.build(total(), handler);
     }
 
     /**

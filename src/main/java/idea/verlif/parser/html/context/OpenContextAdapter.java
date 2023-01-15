@@ -12,8 +12,8 @@ import idea.verlif.parser.vars.VarsContext;
 public class OpenContextAdapter implements VarsContextAdapter {
 
     @Override
-    public VarsContext buildContext(String context) {
-        return new OpenContext(context);
+    public VarsContext buildContext() {
+        return OpenContext.getInstance();
     }
 
     @Override

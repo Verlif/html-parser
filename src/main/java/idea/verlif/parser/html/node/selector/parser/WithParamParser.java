@@ -31,6 +31,10 @@ public class WithParamParser implements SelectorParser {
         parserList.add(new NthLastChildParser());
     }
 
+    public void addWithParser(WithParser parser) {
+        parserList.add(parser);
+    }
+
     @Override
     public NodeLink match(String param, NodeLink nodeLink) {
         int i = param.indexOf(SPLIT);
